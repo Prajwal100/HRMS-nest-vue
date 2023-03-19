@@ -1,32 +1,32 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CategoryService } from './category.service';
-import {Category} from '../../models/category.model';
-@Resolver('Category')
+import { Category } from './category.entity';
+@Resolver(()=>Category)
 export class CategoryResolver {
-    constructor(private categoryService: CategoryService){}
+    constructor(private readonly categoryService: CategoryService){}
     
-    @Query()
+    @Query(()=>[Category],{name:'Category',nullable:true})
     async categories():Promise<Category[]> {
         return this.categoryService.findAll();
     }
     
-    @Query()
-    async category(@Args('id') id:number):Promise<Category> {
-        return this.categoryService.findOne(id);
-    }
+    // @Query(()=>Category)
+    // async category(@Args('id') id:number):Promise<Category> {
+    //     return this.categoryService.findOne(id);
+    // }
     
-    @Mutation()
-    async createCategory(@Args('category') category:Category):Promise<Category> {
-        return this.categoryService.create(category);
-    }
+    // @Mutation()
+    // async createCategory(@Args('category') category:Category):Promise<Category> {
+    //     return this.categoryService.create(category);
+    // }
     
-    @Mutation()
-    async updateCategory(@Args('id') id:number, @Args('category') category:Category):Promise<Category[]> {
-        return this.categoryService.update(id, category);
-    }
+    // @Mutation()
+    // async updateCategory(@Args('id') id:number, @Args('category') category:Category):Promise<[number, Category[]]> {
+    //     return this.categoryService.update(id, category);
+    // }
     
-    @Mutation()
-    async deleteCategory(@Args('id') id:number):Promise<number>{
-        return this.categoryService.delete(id)
-    }
+    // @Mutation()
+    // async deleteCategory(@Args('id') id:number):Promise<void>{
+    //     return this.categoryService.delete(id)
+    // }
 }
