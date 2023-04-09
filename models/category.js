@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       title: DataTypes.STRING,
       image: DataTypes.STRING,
-      status: DataTypes.ENUM('active', 'inactive'),
     },
     {
       sequelize,

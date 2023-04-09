@@ -3,10 +3,37 @@
 # ------------------------------------------------------
 
 type Category {
-  image: String!
+  id: Int!
+  image: String
+  status: String!
   title: String!
 }
 
+input CreateCategoryInput {
+  image: String!
+  status: String!
+  title: String!
+}
+
+type DeleteCategoryDTO {
+  message: String!
+  success: Boolean!
+}
+
+type Mutation {
+  createCategory(createCategoryInput: CreateCategoryInput!): Category
+  deleteCategory(id: Float!): DeleteCategoryDTO!
+  updateCategory(id: Float!, updateCategoryInput: UpdateCategoryInput!): Category!
+}
+
 type Query {
-  Category: [Category!]
+  categories: [Category!]
+  category(id: Float!): Category
+}
+
+input UpdateCategoryInput {
+  id: Int!
+  image: String
+  status: String!
+  title: String
 }

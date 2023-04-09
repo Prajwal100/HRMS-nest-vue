@@ -1,11 +1,15 @@
+import { UpdateCategoryInput } from './dto/update-category.input';
 import { InjectModel } from '@nestjs/sequelize';
-import { Injectable } from '@nestjs/common';
+import { Inject,Injectable } from '@nestjs/common';
 import { Category } from './category.entity';
+import { Sequelize } from 'sequelize';
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectModel(Category)
     private categoryModel: typeof Category,
+    @Inject('SEQUELIZE')
+    private readonly sequelize:Sequelize
   ) {}
   async findAll(): Promise<Category[]> {
     return this.categoryModel.findAll();
@@ -15,18 +19,60 @@ export class CategoryService {
     return this.categoryModel.findByPk(id);
   }
 
-//   async create(category: Category): Promise<Category> {
-//     return this.categoryRepository.create(category);
-//   }
+  async create(category: any) {
+    const transaction=await this.sequelize.transaction();
+    try{
+      const res=await this.categoryModel.create(category);
+      await transaction.commit();
+      
+      return res;
+    }
+    catch(err){
+      await transaction.rollback();
+      throw new Error("Something went wrong.")
+    }
+  }
 
-//   async update(
-//     id: number,
-//     category: Category,
-//   ): Promise<[number, Category[]]> {
-//     return this.categoryRepository.update(category, { where: { id } });
-//   }
+  async update(
+    id: number,
+    updateCategoryInput: UpdateCategoryInput,
+  ){
+    
+    const transaction=await this.sequelize.transaction();
+    try{
+    const res= this.categoryModel.update(updateCategoryInput, { where: { id } });
+    
+    await transaction.commit();
+    
+    return await this.findOne(id)
+      
+    }
+    catch(err){
+      await transaction.rollback();
+      throw new Error("Something went wrong.");
+    }
+  }
 
-//   async delete(id: number): Promise<void> {
-//     return this.categoryRepository.destroy({ where: { id } });
-//   }
+  async delete(id: number){
+    const transaction=await this.sequelize.transaction();
+    try{
+      const res= await this.categoryModel.destroy({ where: { id } });
+      transaction.commit();
+      if(res===1){
+        return {
+          success:true,
+          message:"Category deleted successfully."
+        }
+      }
+      else{
+        return {
+          success:false,
+          message:"Category not found."
+        }
+      }
+    }
+    catch(err){
+      transaction.rollback();
+    }
+  }
 }
