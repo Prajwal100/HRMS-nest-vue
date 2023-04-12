@@ -40,7 +40,7 @@ export class CategoryService {
     
     const transaction=await this.sequelize.transaction();
     try{
-    const res= this.categoryModel.update(updateCategoryInput, { where: { id } });
+    this.categoryModel.update(updateCategoryInput, { where: { id } });
     
     await transaction.commit();
     

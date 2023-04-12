@@ -15,20 +15,43 @@ input CreateCategoryInput {
   title: String!
 }
 
+input CreateTagInput {
+  name: String!
+  slug: String!
+  status: String!
+}
+
 type DeleteCategoryDTO {
+  message: String!
+  success: Boolean!
+}
+
+type DeleteTagInput {
   message: String!
   success: Boolean!
 }
 
 type Mutation {
   createCategory(createCategoryInput: CreateCategoryInput!): Category
+  createTag(createTagInput: CreateTagInput!): Tag
   deleteCategory(id: Float!): DeleteCategoryDTO!
+  deleteTag(id: Float!): DeleteTagInput
   updateCategory(id: Float!, updateCategoryInput: UpdateCategoryInput!): Category!
+  updateTag(id: Float!, updateTagInput: UpdateTagInput!): Tag
 }
 
 type Query {
   categories: [Category!]
   category(id: Float!): Category
+  tag(id: Float!): Tag
+  tags: [Tag!]
+}
+
+type Tag {
+  id: ID!
+  name: String
+  slug: String!
+  status: String!
 }
 
 input UpdateCategoryInput {
@@ -36,4 +59,11 @@ input UpdateCategoryInput {
   image: String
   status: String!
   title: String
+}
+
+input UpdateTagInput {
+  id: Int!
+  name: String
+  slug: String
+  status: String
 }
